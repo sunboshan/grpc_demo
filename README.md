@@ -48,3 +48,53 @@ client got res: {:ok, %ResHello{a: 4}}
 client got res: {:ok, %ResHello{a: 9}}
 :ok
 ```
+
+## Diagram
+
+```
+  rpc say_hello1(ReqHello) returns (ResHello);
+
+  One request, one response.
+
+      server         client
+      ---------------------
+       <- |req|
+                  |res| ->
+      ---------------------
+
+==================================================================
+
+  rpc say_hello2(stream ReqHello) returns (ResHello);
+
+  Stream requests, one response.
+
+      server                client
+      ----------------------------
+       <- |req| <- |req| <- |req|
+                |res| ->
+      ----------------------------
+
+==================================================================
+
+  rpc say_hello3(ReqHello) returns (stream ResHello);
+
+  One request, stream responses.
+
+      server                client
+      ----------------------------
+                <- |req|
+       |res| -> |res| -> |res| ->
+      ----------------------------
+
+==================================================================
+
+  rpc say_hello4(stream ReqHello) returns (stream ResHello);
+
+  Stream requests, stream responses.
+
+      server                client
+      ----------------------------
+       <- |req| <- |req| <- |req|
+       |res| -> |res| -> |res| ->
+      ----------------------------
+```

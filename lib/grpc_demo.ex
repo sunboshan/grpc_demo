@@ -4,11 +4,29 @@ defmodule GRPCDemo do
     chan
   end
 
+  @doc """
+  One request, one response.
+
+      server         client
+      ---------------------
+       <- |req|
+                  |res| ->
+      ---------------------
+  """
   def test1(chan) do
     {:ok, %ResHello{a: a}} = Hello.Stub.say_hello1(chan, ReqHello.new(a: 1))
     a
   end
 
+  @doc """
+  Stream requests, one response.
+
+      server                client
+      ----------------------------
+       <- |req| <- |req| <- |req|
+                |res| ->
+      ----------------------------
+  """
   def test2(chan) do
     stream = Hello.Stub.say_hello2(chan)
     GRPC.Stub.send_request(stream, ReqHello.new(a: 1), end_stream: false)
@@ -18,11 +36,29 @@ defmodule GRPCDemo do
     a
   end
 
+  @doc """
+  One request, stream responses.
+
+      server                client
+      ----------------------------
+                <- |req|
+       |res| -> |res| -> |res| ->
+      ----------------------------
+  """
   def test3(chan) do
     {:ok, stream} = Hello.Stub.say_hello3(chan, ReqHello.new(a: 1))
     Enum.each(stream, &IO.inspect(&1, label: "client got res"))
   end
 
+  @doc """
+  Stream requests, stream responses.
+
+      server                client
+      ----------------------------
+       <- |req| <- |req| <- |req|
+       |res| -> |res| -> |res| ->
+      ----------------------------
+  """
   def test4(chan) do
     stream = Hello.Stub.say_hello4(chan)
     GRPC.Stub.send_request(stream, ReqHello.new(a: 1), end_stream: false)
