@@ -1,0 +1,1 @@
+alias GRPCDemo, as: G

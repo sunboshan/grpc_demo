@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+message ReqHello {
+  int32 a = 1;
+}
+
+message ResHello {
+  int32 a = 1;
+}
+
+service Hello {
+  rpc say_hello1(ReqHello) returns (ResHello);
+  rpc say_hello2(stream ReqHello) returns (ResHello);
+  rpc say_hello3(ReqHello) returns (stream ResHello);
+  rpc say_hello4(stream ReqHello) returns (stream ResHello);
+}
